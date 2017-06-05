@@ -21,6 +21,52 @@ To meet specifications, the project will require submitting five files:
 
 This README file describes how to output the video in the "Details About Files In This Directory" section.
 
+Flow work:
+---
+* Collect data: almost 20 laps collect data from ['center', 'left', 'right'] cameras , 'steering', 'throttle', 'reverse', 'speed'.
+* Using :
+    * [pandas] for data analysis toolkit - create, read, update, delete datasets
+    * [sklearn] model_selection, to split out training and testing data.
+    * [keras] models as Sequential container is a linear stack of layers. Adam as optimization strategy that uses gradient descent. And callbacks to save our model periodically as checkpoints for loading later
+* Split the data into a training (80), testing(20), and validation set.
+* Pre process for images
+    * Crop image to remove the sky at the top and the car front at the bottom.
+    * Resize the image to the input shape used by the network model
+    * Convert the image from RGB to YUV (This is what the NVIDIA model does)
+* Using 9 CNN NVIDIA structure.
+* Saves the model after every epoch.
+* Calculate the difference between expected steering angle and actual steering angle square the difference add up all those differences for as many data points as we have divide by the number of them that value is our mean squared error! this is what we want to minimize via gradient descent
+* Fits the model on data generated batch-by-batch by a Python generator, generator is run in parallel to the model.
+ 
+Using NVIDIA model
+----
+
+    Image normalization to avoid saturation and make gradients work better.
+    Convolution: 5x5, filter: 24, strides: 2x2, activation: ELU
+    Convolution: 5x5, filter: 36, strides: 2x2, activation: ELU
+    Convolution: 5x5, filter: 48, strides: 2x2, activation: ELU
+    Convolution: 3x3, filter: 64, strides: 1x1, activation: ELU
+    Convolution: 3x3, filter: 64, strides: 1x1, activation: ELU
+    Drop out (0.5)
+    Fully connected: neurons: 100, activation: ELU
+    Fully connected: neurons: 50, activation: ELU
+    Fully connected: neurons: 10, activation: ELU
+    Fully connected: neurons: 1 (output)
+
+    # the convolution layers are meant to handle feature engineering
+    the fully connected layer for predicting the steering angle.
+    dropout avoids overfitting
+    ELU(Exponential linear unit) function takes care of the Vanishing gradient problem.
+
+Anonymous Mode
+---
+* Pre process for images
+    * Crop image to remove the sky at the top and the car front at the bottom.
+    * Resize the image to the input shape used by the network model
+    * Convert the image from RGB to YUV (This is what the NVIDIA model does)
+* Predict steering_angle.
+* overwrite the speed and steering angle.
+
 Creating a Great Writeup
 ---
 A great writeup should include the [rubric points](https://review.udacity.com/#!/rubrics/432/view) as well as your description of how you addressed each point.  You should include a detailed description of the code used (with line-number references and code snippets where necessary), and links to other supporting documents or external references.  You should include images in your writeup to demonstrate how your code works with examples.  
@@ -116,3 +162,4 @@ The video will run at 48 FPS. The default FPS is 60.
 
 1. It's been noted the simulator might perform differently based on the hardware. So if your model drives succesfully on your machine it might not on another machine (your reviewer). Saving a video is a solid backup in case this happens.
 2. You could slightly alter the code in `drive.py` and/or `video.py` to create a video of what your model sees after the image is processed (may be helpful for debugging).
+
