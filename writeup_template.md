@@ -18,13 +18,13 @@ The goals / steps of this project are the following:
 
 [//]: # (Image References)
 
-[image1]: ./examples/placeholder.png "Model Visualization"
-[image2]: ./examples/placeholder.png "Grayscaling"
-[image3]: ./examples/placeholder_small.png "Recovery Image"
-[image4]: ./examples/placeholder_small.png "Recovery Image"
-[image5]: ./examples/placeholder_small.png "Recovery Image"
-[image6]: ./examples/placeholder_small.png "Normal Image"
-[image7]: ./examples/placeholder_small.png "Flipped Image"
+
+[image1]: ./images/model_architecture.jpeg
+[image2]: ./images/center_.jpg
+[image3]: ./images/left_.jpg
+[image4]: ./images/right_.jpg
+
+
 
 ## Rubric Points
 ###Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/432/view) individually and describe how I addressed each point in my implementation.  
@@ -92,15 +92,34 @@ For details about how I created the training data, see the next section.
 
 ####1. Solution Design Approach
 
-The overall strategy for deriving a model architecture was to ...
+The overall strategy for deriving a model architecture was to :
+* Use the simulator to collect data of good driving behavior
+* Design, train and validate a model that predicts a steering angle from image data
+* Use the model to drive the vehicle autonomously around the first track in the simulator. The vehicle should remain on the road for an entire loop around the track.
+* Summarize the results with a written report
 
-My first step was to use a convolution neural network model similar to the ... I thought this model might be appropriate because ...
+My first step was to use a convolution neural network model similar architecture to NVIDIA.
+
+    Convolution: 5x5, filter: 24, strides: 2x2, activation: ELU
+    Convolution: 5x5, filter: 36, strides: 2x2, activation: ELU
+    Convolution: 5x5, filter: 48, strides: 2x2, activation: ELU
+    Convolution: 3x3, filter: 64, strides: 1x1, activation: ELU
+    Convolution: 3x3, filter: 64, strides: 1x1, activation: ELU
+    
+I thought this model might be appropriate because this powerful end-to-end approach means that with minimum training data.
 
 In order to gauge how well the model was working, I split my image and steering angle data into a training and validation set. I found that my first model had a low mean squared error on the training set but a high mean squared error on the validation set. This implied that the model was overfitting. 
 
-To combat the overfitting, I modified the model so that ...
+To combat the overfitting, I modified the model so that dropout avoids overfitting.
 
-Then I ... 
+Then I fully connected: neurons: 100, activation: ELU
+    
+    Fully connected: neurons: 50, activation: ELU
+    Fully connected: neurons: 10, activation: ELU
+    Fully connected: neurons: 1 (output)
+
+    the convolution layers are meant to handle feature engineering
+    the fully connected layer for predicting the steering angle. 
 
 The final step was to run the simulator to see how well the car was driving around track one. There were a few spots where the vehicle fell off the track... to improve the driving behavior in these cases, I ....
 
@@ -128,16 +147,3 @@ I then recorded the vehicle recovering from the left side and right sides of the
 
 Then I repeated this process on track two in order to get more data points.
 
-To augment the data sat, I also flipped images and angles thinking that this would ... For example, here is an image that has then been flipped:
-
-![alt text][image6]
-![alt text][image7]
-
-Etc ....
-
-After the collection process, I had X number of data points. I then preprocessed this data by ...
-
-
-I finally randomly shuffled the data set and put Y% of the data into a validation set. 
-
-I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was Z as evidenced by ... I used an adam optimizer so that manually training the learning rate wasn't necessary.
